@@ -2,19 +2,28 @@
 <html>
 
 <head>
-
+    <title>Chat app</title>
+    <link rel='icon' href='./img/favicon.png'>
+    <link rel='stylesheet' href='./css/styles.css'>
 </head>
 
 <body>
-    <h1>Chat app</h1>
+    <div class='chat'>
+        <div class='chat__sidebar'>
 
-    <div id='messages'></div>
+        </div>
+        <div class='chat__main'>
+            <div id='messages' class='chat__messages'></div>
 
-    <form id='chat'>
-        <input id='messageContent' type='text' placeholder='Message'>
-        <button id='sendMessage'>Send</button>
-    </form>
-    <button id='shareLocation'>Share location</button>
+            <div class='compose'>
+                <form id='chat'>
+                    <input id='messageContent' type='text' placeholder='Message'>
+                    <button id='sendMessage'>Send</button>
+                </form>
+                <button id='shareLocation'>Share location</button>
+            </div>
+        </div>
+    </div>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.1/qs.min.js'></script>

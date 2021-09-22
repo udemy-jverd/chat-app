@@ -1,15 +1,9 @@
-const generateMessage = (text) => {
+const generateMessage = (text, isURL = false) => {
     return {
         text,
-        createdAt: new Date().getTime()
+        createdAt: new Date().getTime(),
+        isURL
     }
 }
 
-const generateLocation = (url) => {
-    return {
-        url,
-        createdAt: new Date().getTime()
-    }
-}
-
-module.exports = { generateMessage, generateLocation }
+module.exports = { generateMessage }

@@ -2,7 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
-const { generateMessage, generateLocation } = require('./utils/messages');
+const { generateMessage } = require('./utils/messages');
 
 const app = express();
 const server = http.createServer(app);
@@ -32,8 +32,8 @@ io.on('connection', (socket) => {
     socket.on('shareLocation', (coords, callback) => {
         const { latitude, longitude } = coords;
         io.emit(
-            'location',
-            generateLocation(`https://google.com/maps?q=${latitude},${longitude}`)
+            'message',
+            generateMessage(`https://google.com/maps?q=${latitude},${longitude}`, true),
         );
         callback('Location shared!');
     });

@@ -6,18 +6,24 @@ const sendButton = document.getElementById('sendMessage');
 const shareLocationButton = document.getElementById('shareLocation');
 const messages = document.getElementById('messages');
 
-socket.on('message', (message) => {
-    const { text, createdAt } = message
+const getHTMLMessage = (message) => {
+    const { text, createdAt, isURL } = message
+    let formattedText = text;
+    if (isURL) {
+        formattedText = `<a href='${text}' target='_blank'>My current location`;
+    }
     const date = moment(createdAt).format('h:mm a');
-    const html = `<p>${date} - ${text}</p>`;
-    messages.insertAdjacentHTML('beforeend', html);
-});
+    return `<div class='message'>
+        <p>
+            <span class='message__name'>Bobby</span>
+            <span class='message__meta'>${date}</span>
+        </p>
+        <p>${formattedText}</p>
+    </div>`;
+}
 
-socket.on('location', (location) => {
-    const { url, createdAt } = location;
-    const date = moment(createdAt).format('h:mm a');
-    const html = `<p>${date} - <a href='${url}' target='_blank'>My current location</p>`;
-    messages.insertAdjacentHTML('beforeend', html);
+socket.on('message', (message) => {
+    messages.insertAdjacentHTML('beforeend', getHTMLMessage);
 });
 
 chatForm.addEventListener('submit', (e) => {
