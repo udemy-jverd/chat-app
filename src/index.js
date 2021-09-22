@@ -2,6 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
+const { generateMessage, generateLocation } = require('./utils/messages');
 
 const app = express();
 const server = http.createServer(app);
@@ -18,21 +19,27 @@ app.use(express.static(publicDirectory));
 
 io.on('connection', (socket) => {
 
-    socket.emit('message', 'Welcome!');
-    socket.broadcast.emit('message', 'A new user has joined the chat room!');
+    socket.emit('message', generateMessage('Welcome!'));
+    socket.broadcast.emit(
+        'message',
+        generateMessage('A new user has joined the chat room!')
+    );
 
     socket.on('newMessage', (message, callback) => {
-        io.emit('message', message);
+        io.emit('message', generateMessage(message));
         callback('Message delivered!');
     });
     socket.on('shareLocation', (coords, callback) => {
         const { latitude, longitude } = coords;
-        io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`);
+        io.emit(
+            'location',
+            generateLocation(`https://google.com/maps?q=${latitude},${longitude}`)
+        );
         callback('Location shared!');
     });
 
     socket.on('disconnect', () => {
-        io.emit('message', 'A user has left the chat room!');
+        io.emit('message', generateMessage('A user has left the chat room!'));
     });
 });
 
