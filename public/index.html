@@ -8,27 +8,16 @@
 </head>
 
 <body>
-    <div class='chat'>
-        <div class='chat__sidebar'>
-
-        </div>
-        <div class='chat__main'>
-            <div id='messages' class='chat__messages'></div>
-
-            <div class='compose'>
-                <form id='chat'>
-                    <input id='messageContent' type='text' placeholder='Message'>
-                    <button id='sendMessage'>Send</button>
-                </form>
-                <button id='shareLocation'>Share location</button>
-            </div>
+    <div class='centered-form'>
+        <div class='centered-form__box'>
+            <h1>Chat app</h1>
+            <form action='/chat.html' autocomplete='off'>
+                <input type='text' name='pseudo' placeholder='Pseudo' required>
+                <input type='text' name='room' placeholder='Room' required>
+                <button>Join</button>
+            </form>
         </div>
     </div>
-
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.1/qs.min.js'></script>
-    <script src='/socket.io/socket.io.js'></script>
-    <script src='/javascript/chat.js'></script>
 </body>
 
 </html>

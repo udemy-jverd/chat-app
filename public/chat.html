@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat app</title>
+    <link rel='icon' href='./img/favicon.png'>
+    <link rel='stylesheet' href='./css/styles.css'>
+</head>
+
+<body>
+    <div class='chat'>
+        <div class='chat__sidebar'>
+            <h2 class='room-title' id='roomTitle'></h2>
+            <h3 class='list-title'>Users</h3>
+            <ul class='users' id='usersList'></ul>
+        </div>
+        <div class='chat__main'>
+            <div id='messages' class='chat__messages'></div>
+
+            <div class='compose'>
+                <form id='chat' autocomplete='off'>
+                    <input id='messageContent' type='text' placeholder='Message' required>
+                    <button id='sendMessage'>Send</button>
+                </form>
+                <button id='shareLocation'>Share location</button>
+            </div>
+        </div>
+    </div>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.1/qs.min.js'></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src='/javascript/chat.js'></script>
+</body>
+
+</html>

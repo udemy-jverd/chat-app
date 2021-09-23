@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 const { generateMessage } = require('./utils/messages');
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users');
 
 const app = express();
 const server = http.createServer(app);
@@ -14,32 +15,59 @@ const publicDirectory = path.join(__dirname, '../public');
 app.use(express.static(publicDirectory));
 
 // socket.emit call the event only for the client who ask
-// socket.broadcast.emit call the event for every connected client exect the current one
+// socket.broadcast.emit call the event for every connected client exept the current one
 // io.emit call the event for every connected client
+// io.to.emit call the event for every connected client in a specific room
+// socket.broadcast.to.emit call the event for every connected client exept the current one in a specific room
 
 io.on('connection', (socket) => {
-
-    socket.emit('message', generateMessage('Welcome!'));
-    socket.broadcast.emit(
-        'message',
-        generateMessage('A new user has joined the chat room!')
-    );
+    socket.on('join', (options, callback) => {
+        const { user, error } = addUser({ id: socket.id, ...options });
+        if (error) {
+            return callback(error);
+        }
+        socket.join(user.room);
+        socket.emit('message', generateMessage('Admin', 'Welcome!'));
+        socket.broadcast.to(user.room).emit(
+            'message',
+            generateMessage('Admin', `${user.pseudo} has joined the room!`)
+        );
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        });
+        callback();
+    });
 
     socket.on('newMessage', (message, callback) => {
-        io.emit('message', generateMessage(message));
-        callback('Message delivered!');
+        const user = getUser(socket.id);
+        io.to(user.room).emit('message', generateMessage(user.pseudo, message));
+        callback();
     });
+
     socket.on('shareLocation', (coords, callback) => {
         const { latitude, longitude } = coords;
-        io.emit(
+        const user = getUser(socket.id);
+        io.to(user.room).emit(
             'message',
-            generateMessage(`https://google.com/maps?q=${latitude},${longitude}`, true),
+            generateMessage(
+                user.pseudo,
+                `https://google.com/maps?q=${latitude},${longitude}`,
+                true
+            ),
         );
-        callback('Location shared!');
+        callback();
     });
 
     socket.on('disconnect', () => {
-        io.emit('message', generateMessage('A user has left the chat room!'));
+        const user = removeUser(socket.id);
+        if (user) {
+            io.to(user.room).emit('message', generateMessage('Admin', `${user.pseudo} has left the room!`));
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            });
+        }
     });
 });
 
